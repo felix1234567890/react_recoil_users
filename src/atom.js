@@ -7,7 +7,7 @@ export const usersState = atom({
 });
 export const filterState = atom({
   key: "filter",
-  default: "",
+  default: {},
 });
 export const searchState = atom({
   key: "searchTerm",
@@ -26,7 +26,7 @@ export const sortedUsers = selector({
   get: ({ get }) => {
     const { users } = get(usersState);
     const filter = get(filterState);
-    switch (filter) {
+    switch (filter.value) {
       case "desc":
         return users.sort((a, b) => {
           return b.age - a.age;
