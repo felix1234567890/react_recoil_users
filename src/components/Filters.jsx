@@ -2,12 +2,8 @@ import React from "react";
 import Select from "react-select";
 import Proptypes from "prop-types";
 import customStyles from "../customStyles";
-import { useRecoilValue } from "recoil";
-import { sortedUsers } from "../atom";
 
 const Filters = ({ sort, sortOrder }) => {
-  const sorted = useRecoilValue(sortedUsers);
-  console.log(sorted);
   const options = [
     { value: "", label: "None" },
     { value: "asc", label: "Age - ascending" },

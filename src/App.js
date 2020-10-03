@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./app.scss";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
   usersState,
-  shuffledPaginatedUsers,
   searchState,
   filterState,
+  paginationState,
+  paginatedUsers,
 } from "./atom";
 import Header from "./components/Header";
 import Filters from "./components/Filters";
+import UsersList from "./components/UsersList";
+import Pagination from "./components/Pagination";
+import { paginateUsers, shuffleUsers } from "./helpers";
 
 function App() {
-  const [{ loading }, setUsersData] = useRecoilState(usersState);
+  const [{ loading, users }, setUsersData] = useRecoilState(usersState);
   const [_, setSearch] = useRecoilState(searchState);
   const [filter, setFilter] = useRecoilState(filterState);
-  const adjustedUsers = useRecoilValue(shuffledPaginatedUsers);
-  const [paginationState, setPaginationState] = useState({
-    pageNumber: 1,
-    itemsPerPage: 6,
-    pageCount: null,
-  });
+  const shownUsers = useRecoilValue(paginatedUsers);
+  const [
+    { itemsPerPage, pageCount, pageNumber },
+    setPaginationState,
+  ] = useRecoilState(paginationState);
   const handleSearch = (event) => {
     setSearch(event.target.value);
   };
@@ -31,18 +34,48 @@ function App() {
     }));
   };
 
+  const increaseNumber = () => {
+    setPaginationState((prevState) => ({
+      ...prevState,
+      pageNumber: prevState.pageNumber + 1,
+    }));
+  };
+
+  const decreaseNumber = () => {
+    setPaginationState((prevState) => ({
+      ...prevState,
+      pageNumber: prevState.pageNumber - 1,
+    }));
+  };
+
   useEffect(() => {
     setUsersData((prev) => ({ ...prev, loading: true }));
     fetch("./users.json").then((data) =>
       data.json().then((res) => {
-        setUsersData({ users: [...res], loading: false });
+        const data = shuffleUsers(res);
+        setUsersData({ users: data, loading: false });
+        setPaginationState((prevState) => ({
+          ...prevState,
+          pageCount: Math.ceil(res.length / itemsPerPage),
+        }));
       })
     );
-  }, [setUsersData]);
+  }, [itemsPerPage, setPaginationState, setUsersData]);
+
+  useEffect(() => {
+    paginateUsers(users, paginationState.pageNumber);
+  }, [users]);
   return (
     <>
       <Header search={handleSearch} />
       <Filters sort={handleSortByAge} sortOrder={filter} />
+      <UsersList users={shownUsers} loading={loading} />
+      <Pagination
+        pageCount={pageCount}
+        pageNumber={pageNumber}
+        increaseNumber={increaseNumber}
+        decreaseNumber={decreaseNumber}
+      />
     </>
   );
 }

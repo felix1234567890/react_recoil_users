@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { useRecoilValue } from "recoil";
-import { filteredUsers } from "../atom";
 
 const Header = ({ search }) => {
   const [lang, setLang] = useState("en");
-  const users = useRecoilValue(filteredUsers);
   const changeLanguage = () => {
     if (lang === "en") {
       setLang("hr");
@@ -13,7 +10,6 @@ const Header = ({ search }) => {
       setLang("en");
     }
   };
-  users && console.log(users);
   return (
     <header className="header">
       <div className="header__title">Users search app</div>
