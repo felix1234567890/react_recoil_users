@@ -1,42 +1,25 @@
 import React, { useEffect } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { useRecoilState } from "recoil";
-import { usersState } from "./atom";
+import "./app.scss";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { usersState, shuffledPaginatedUsers, searchState } from "./atom";
+import Header from "./components/Header";
 
 function App() {
-  const [{ loading, users }, setUsersData] = useRecoilState(usersState);
+  const [{ loading }, setUsersData] = useRecoilState(usersState);
+  const [_, setSearch] = useRecoilState(searchState);
+  const adjustedUsers = useRecoilValue(shuffledPaginatedUsers);
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
   useEffect(() => {
     setUsersData((prev) => ({ ...prev, loading: true }));
     fetch("./users.json").then((data) =>
       data.json().then((res) => {
-        setTimeout(() => {
-          setUsersData({ users: [...res], loading: false });
-        }, 3000);
+        setUsersData({ users: [...res], loading: false });
       })
     );
   }, [setUsersData]);
-  console.log(loading);
-  console.log(users);
-  if (loading) return <h1>Loading</h1>;
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <Header search={handleSearch} />;
 }
 
 export default App;

@@ -1,4 +1,5 @@
 import { atom, selector } from "recoil";
+import { paginateUsers, shuffleUsers } from "./helpers";
 
 export const usersState = atom({
   key: "users",
@@ -12,10 +13,18 @@ export const searchState = atom({
   key: "searchTerm",
   default: "",
 });
+export const shuffledPaginatedUsers = selector({
+  key: "shuffledPaginatedUsers",
+  get: ({ get }) => {
+    const { users } = get(usersState);
+    const res = shuffleUsers([...users]);
+    return paginateUsers(res);
+  },
+});
 export const sortedUsers = selector({
   key: "filteredUsers",
   get: ({ get }) => {
-    const users = get(usersState);
+    const { users } = get(usersState);
     const filter = get(filterState);
     switch (filter) {
       case "desc":
@@ -46,22 +55,14 @@ export const sortedUsers = selector({
 export const filteredUsers = selector({
   key: "searchedUsers",
   get: ({ get }) => {
-    const users = get(usersState);
+    const { users } = get(usersState);
     const searchTerm = get(searchState);
     const searchedUsers = users.filter((user) => {
-      if (user.country.toLowerCase().contains(searchTerm.toLowerCase()))
+      if (user.country.toLowerCase().startsWith(searchTerm.toLowerCase()))
         return true;
       return false;
     });
     searchedUsers.sort((a, b) => a.country - b.country);
-    return searchedUsers;
+    return paginateUsers(searchedUsers);
   },
 });
-
-const paginateUsers = (users, pageNumber = 1, itemsPerPage = 6) => {
-  const skip = (pageNumber - 1) * itemsPerPage;
-  if (users.length > 0) {
-    const shownUsers = users.slice(skip, skip + itemsPerPage);
-    return shownUsers;
-  }
-};
