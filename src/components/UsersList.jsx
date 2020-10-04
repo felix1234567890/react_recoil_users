@@ -2,6 +2,7 @@ import React from "react";
 import UserItem from "./UserItem";
 
 const UsersList = ({ users, loading }) => {
+  console.log(users);
   return (
     <div className="container">
       {loading && <h1>Loading...</h1>}

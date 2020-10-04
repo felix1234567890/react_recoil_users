@@ -6,10 +6,3 @@ export const shuffleUsers = (users) => {
   }
   return users;
 };
-export const paginateUsers = (users, pageNumber = 1, itemsPerPage = 6) => {
-  const skip = (pageNumber - 1) * itemsPerPage;
-  if (users.length > 0) {
-    const shownUsers = users.slice(skip, skip + itemsPerPage);
-    return shownUsers;
-  }
-};
