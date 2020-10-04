@@ -15,28 +15,6 @@ export const searchState = atom({
   default: "",
 });
 
-export const paginationState = atom({
-  key: "pagination",
-  default: {
-    pageNumber: 1,
-    itemsPerPage: 6,
-    pageCount: 0,
-  },
-});
-
-export const paginatedUsers = selector({
-  key: "paginatedUsers",
-  get: ({ get }) => {
-    const { users } = get(usersState);
-    const { pageNumber, itemsPerPage } = get(paginationState);
-    const skip = (pageNumber - 1) * itemsPerPage;
-    if (users.length > 0) {
-      const shownUsers = users.slice(skip, skip + itemsPerPage);
-      return shownUsers;
-    }
-  },
-});
-
 export const sortedUsers = selector({
   key: "sortedUsers",
   get: ({ get }) => {
