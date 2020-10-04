@@ -14,5 +14,6 @@
   "lng": "HR",
   "country": "Država",
   "gender": "Spol",
-  "age": "Starost"
+  "age": "Starost",
+  "loading": "Učitavanje"
 }

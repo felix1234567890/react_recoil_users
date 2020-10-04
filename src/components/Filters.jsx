@@ -1,21 +1,23 @@
 import React from "react";
 import Select from "react-select";
 import Proptypes from "prop-types";
+import { useTranslation } from "react-i18next";
 import customStyles from "../customStyles";
 
 const Filters = ({ sort, sortOrder }) => {
+  const { t } = useTranslation();
   const options = [
-    { value: "", label: "None" },
-    { value: "asc", label: "Age - ascending" },
-    { value: "desc", label: "Age - descending" },
-    { value: "under40", label: "Age - under 40" },
-    { value: "over40", label: "Age - over 40" },
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
+    { value: "", label: t("none") },
+    { value: "asc", label: t("ageAsc") },
+    { value: "desc", label: t("ageDesc") },
+    { value: "under40", label: t("ageUnder") },
+    { value: "over40", label: t("ageOver") },
+    { value: "male", label: t("male") },
+    { value: "female", label: t("female") },
   ];
   return (
     <div className="sortBy">
-      <span>Sort by</span>
+      <span>{t("sortBy")}</span>
       <Select
         styles={customStyles}
         defaultValue={options[0]}

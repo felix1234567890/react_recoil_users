@@ -14,5 +14,6 @@
   "lng": "EN",
   "country": "Country",
   "gender": "Gender",
-  "age": "Age"
+  "age": "Age",
+  "loading": "Loading"
 }
